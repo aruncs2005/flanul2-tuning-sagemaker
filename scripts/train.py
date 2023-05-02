@@ -30,9 +30,7 @@ def test_step(model, batch):
 def main():
     args = parse_args()
 
-    # We are loading the model to make sure smp model creation doesn't fail.
     config = AutoConfig.from_pretrained(args.model_name_or_path)
-    model = AutoModelForSeq2SeqLM.from_config(config)
     
     with smp.model_creation(
         dtype=torch.bfloat16
@@ -140,7 +138,7 @@ def main():
 
     optimizer = smp.DistributedOptimizer(optimizer)
 
-       # Train!
+    # Train!
     total_batch_size = args.per_device_train_batch_size *smp.size() * args.gradient_accumulation_steps
 
     if is_main_process(smp.rank()):
@@ -188,8 +186,7 @@ def main():
                 batch = {k: v.to(device) for k, v, in batch.items()}
                 loss = test_step(model, batch).reduce_mean()
             losses.append(loss)
-            # if step >= 100:
-            #     break
+        
         try:
             eval_loss = torch.mean(torch.tensor(losses,dtype=float))
             perplexity = math.exp(eval_loss)
