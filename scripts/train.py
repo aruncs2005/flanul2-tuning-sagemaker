@@ -36,7 +36,7 @@ def main():
         dtype=torch.bfloat16
         ):
         model =  AutoModelForSeq2SeqLM.from_pretrained(args.model_name_or_path,
-                                                        cache_dir=f"{args.model_dir}",config=config,torch_dtype=torch.bfloat16)
+                                                        cache_dir=f"/tmp",config=config,torch_dtype=torch.bfloat16)
         model.config.use_cache = False
 
 
